@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "oAj9TyshUiskZlTqzyDpyqnvfIubg1ffZuxhC6qsZ7Q=",
+  "Source": "HR.ERP.API",
+  "BasePath": "_content/HR.ERP.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
