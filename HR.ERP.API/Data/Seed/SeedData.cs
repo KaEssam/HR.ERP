@@ -12,7 +12,7 @@ public static class SeedData
 
         // Seed Roles
         string[] roleNames = { "Admin", "Manager", "Employee", "HR" };
-        
+
         foreach (var roleName in roleNames)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -23,7 +23,7 @@ public static class SeedData
 
         // Seed Admin User
         var adminUser = await userManager.FindByEmailAsync("admin@hrapp.com");
-        
+
         if (adminUser == null)
         {
             var admin = new Employee
@@ -38,7 +38,7 @@ public static class SeedData
             };
 
             var result = await userManager.CreateAsync(admin, "Admin@123456");
-            
+
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(admin, "Admin");
