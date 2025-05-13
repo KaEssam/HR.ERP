@@ -1,5 +1,7 @@
 using HR.ERP.API.Data;
+using HR.ERP.API.Data.Seed;
 using HR.ERP.API.Models;
+using HR.ERP.API.Service.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +85,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -102,4 +106,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    await SeedData.SeedRolesAndAdminAsync(scope.ServiceProvider);
+
+}
 app.Run();

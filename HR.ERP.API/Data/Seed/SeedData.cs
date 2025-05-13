@@ -34,7 +34,8 @@ public static class SeedData
                 FirstName = "System",
                 LastName = "Admin",
                 Role = "Admin",
-                OnboardingStatus = "Completed"
+                OnboardingStatus = "Completed",
+                DepartmentId = 1
             };
 
             var result = await userManager.CreateAsync(admin, "Admin@123456");
