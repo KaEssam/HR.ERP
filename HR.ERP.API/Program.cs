@@ -1,4 +1,5 @@
 using HR.ERP.API.Data;
+using HR.ERP.API.Data.Seed;
 using HR.ERP.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -37,7 +38,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret not found in configuration.")))
     };
     options.Events = new JwtBearerEvents
     {
@@ -45,7 +46,7 @@ builder.Services.AddAuthentication(options =>
         {
             if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
             {
-                context.Response.Headers.Add("Token-Expired", "true");
+                context.Response.Headers.Append("Token-Expired", "true");
             }
             return Task.CompletedTask;
         }
@@ -97,6 +98,21 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+// Seed data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await SeedData.SeedRolesAndAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

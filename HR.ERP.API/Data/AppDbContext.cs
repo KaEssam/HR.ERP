@@ -12,6 +12,16 @@ namespace HR.ERP.API.Data
         {
         }
 
+        public DbSet<Department> Departments { get; set; } = null!;
+        public DbSet<Attendance> Attendances { get; set; } = null!;
+        public DbSet<LeaveRequest> LeaveRequests { get; set; } = null!;
+        public DbSet<Payroll> Payrolls { get; set; } = null!;
+        public DbSet<PerformanceReview> PerformanceReviews { get; set; } = null!;
+        public DbSet<Benefit> Benefits { get; set; } = null!;
+        public DbSet<JobPosting> JobPostings { get; set; } = null!;
+        public DbSet<JobApplication> JobApplications { get; set; } = null!;
+        public DbSet<Subscription> Subscriptions { get; set; } = null!;
+        public DbSet<AuditLog> AuditLogs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
