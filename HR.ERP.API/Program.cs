@@ -2,6 +2,7 @@ using HR.ERP.API.Data;
 using HR.ERP.API.Data.Seed;
 using HR.ERP.API.Models;
 using HR.ERP.API.Service.Auth;
+using HR.ERP.API.Service.Department;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 var app = builder.Build();
 
