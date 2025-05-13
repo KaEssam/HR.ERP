@@ -21,6 +21,7 @@ namespace HR.ERP.API.Data
         public DbSet<JobPosting> JobPostings { get; set; } = null!;
         public DbSet<JobApplication> JobApplications { get; set; } = null!;
         public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
