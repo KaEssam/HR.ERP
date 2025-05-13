@@ -1,5 +1,4 @@
 using HR.ERP.API.Data;
-using HR.ERP.API.Data.Seed;
 using HR.ERP.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,37 +21,23 @@ builder.Services.AddIdentity<Employee, IdentityRole>()
     .AddDefaultTokenProviders();
 
 // Add authentication and authorization
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JWT:Issuer"],
-        ValidAudience = builder.Configuration["JWT:Audience"],
-        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"] ?? throw new InvalidOperationException("JWT:Secret not found in configuration.")))
-    };
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
+        // Make sure this is not null
+        var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key"));
+
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-            {
-                context.Response.Headers.Append("Token-Expired", "true");
-            }
-            return Task.CompletedTask;
-        }
-    };
-});
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? throw new ArgumentNullException("Jwt:Issuer"),
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? throw new ArgumentNullException("Jwt:Audience"),
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+    });
 
 builder.Services.AddAuthorization();
 
@@ -98,21 +84,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
-// Seed data
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        await SeedData.SeedRolesAndAdminAsync(services);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
-    }
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -7,4 +7,7 @@ public class PerformanceReview
     public string KPI { get; set; } = string.Empty;
     public int Score { get; set; }
     public DateTime ReviewDate { get; set; }
+    
+    public Employee Employee { get; set; }
+    
 }

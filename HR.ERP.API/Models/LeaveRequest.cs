@@ -9,4 +9,7 @@ public class LeaveRequest
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public string Status { get; set; } = string.Empty;
+    
+    public Employee Employee { get; set; }
+    
 }

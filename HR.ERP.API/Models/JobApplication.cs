@@ -6,4 +6,7 @@ public class JobApplication
     public int JobPostingId { get; set; }
     public int EmployeeId { get; set; }
     public string Status { get; set; } = string.Empty;
+    
+    public Employee Employee { get; set; }
+    public JobPosting JobPosting { get; set; }  
 }

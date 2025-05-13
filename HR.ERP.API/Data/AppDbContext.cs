@@ -20,13 +20,17 @@ namespace HR.ERP.API.Data
         public DbSet<Benefit> Benefits { get; set; } = null!;
         public DbSet<JobPosting> JobPostings { get; set; } = null!;
         public DbSet<JobApplication> JobApplications { get; set; } = null!;
-        public DbSet<Subscription> Subscriptions { get; set; } = null!;
         public DbSet<AuditLog> AuditLogs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Department>()
+               .HasMany(e => e.Employees)
+                .WithOne(e => e.Department)
+                .HasForeignKey(e => e.DepartmentId)
+                .IsRequired();
         }
     }
 }

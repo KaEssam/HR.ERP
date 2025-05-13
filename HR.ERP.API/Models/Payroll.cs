@@ -7,4 +7,7 @@ public class Payroll
     public decimal Amount { get; set; }
     public string Period { get; set; } = string.Empty;
     public string PayslipLang { get; set; } = string.Empty;
+    
+    public Employee Employee { get; set; }
+    
 }
